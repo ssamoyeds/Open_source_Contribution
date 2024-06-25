@@ -36,6 +36,9 @@
 						<strong>{{ t('core', 'Cannot install this app') }}</strong>
 					</p>
 				</div>
+				<NcCheckboxRadioSwitch :checked="app.isChosen"
+					:disabled="!app.isCompatible"
+					:loading="app.loading">
 			</template>
 		</div>
 
@@ -62,6 +65,9 @@ import { generateUrl, imagePath } from '@nextcloud/router'
 import { loadState } from '@nextcloud/initial-state'
 import pLimit from 'p-limit'
 import { translate as t } from '@nextcloud/l10n'
+
+import NcCheckboxRadioSwitch from
+	'@nextcloud/vue/dist/Components/NcCheckboxRadioSwitch.js'
 
 import NcButton from '@nextcloud/vue/dist/Components/NcButton.js'
 
@@ -102,6 +108,7 @@ const recommendedIds = Object.keys(recommended)
 export default {
 	name: 'RecommendedApps',
 	components: {
+		NcCheckboxRadioSwitch,
 		NcButton,
 	},
 	data() {
@@ -151,6 +158,7 @@ export default {
 						.catch(error => {
 							logger.error(`could not install ${app.id}`, { error })
 							app.installationError = true
+							app.isSelected = false
 						})
 						.then(() => {
 							logger.info(`installed ${app.id}`)
@@ -192,6 +200,7 @@ export default {
 			}
 			return !!recommended[appId].hidden
 		},
+
 	},
 }
 </script>
@@ -241,9 +250,10 @@ p {
 			margin-top: 0;
 		}
 
-		h3 > span.icon {
-			display: inline-block;
-		}
+		.checkboxRadioSwitch{
+	margin-left: auto
+	padding: 0 1px;
+	}
 	}
 }
 </style>
